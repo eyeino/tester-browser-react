@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function Rows(props) {
+export default function TesterRow(props) {
 
   const { testerId, bugCount, country, firstName, lastName } = props.tester;
 

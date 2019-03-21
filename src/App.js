@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
 import Table from 'react-bootstrap/Table';
+import Rows from './Rows.js'
 import './style.css'
 
 const bugs = require('./json/bugs.json');
@@ -10,13 +11,12 @@ const testers = require('./json/testers.json');
 // unique country values from testers data
 const countries = [...new Set(testers.map(tester => tester.country))];
 class App extends Component {
-  componentWillMount() {
-    // find unique country values amongst testers to use in multiselect component
-    
-    this.setState({
+  constructor(props) {
+    super(props);
+    this.state = {
       selectedCountries: [],
       selectedDevices: []
-    });
+    }
   }
 
   handleCountryChange = (selectedCountries) => {
@@ -30,8 +30,8 @@ class App extends Component {
   render() {
     return (
       <div className='center'>
-        <h1>APPLAUSE</h1>
-        <h2>Tester Browser</h2>
+        <h1>TestCo® Tester Browser</h1>
+        <h2>Find testers perfect for your app!</h2>
         <p>Country:</p>
         <Select
           isMulti
@@ -79,7 +79,7 @@ class App extends Component {
               const tester = suitableCandidate.tester;
               const testersDevices = suitableCandidate.devices.map((device) => (device.deviceId))
               tester.bugCount = bugs.reduce((acc, bug) => { // add up all bugs for sel devices for testers
-                if (testersDevices.includes(bug.deviceId) && (bug.testerId === tester.testerId)) {
+                if ((bug.testerId === tester.testerId) && testersDevices.includes(bug.deviceId)) {
                   acc += 1
                 }
                 return acc
@@ -87,11 +87,7 @@ class App extends Component {
               return tester
             }).sort((a, b) => (b.bugCount - a.bugCount)).map((tester) => {
               return (
-                <tr key={tester.testerId}>
-                  <td>{tester.bugCount}</td>
-                  <td>{tester.country}</td>
-                  <td>{tester.firstName + " " + tester.lastName}</td>
-                </tr>
+                <Rows tester={tester} />
               )
             })}
           </tbody>
